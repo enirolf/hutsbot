@@ -1,5 +1,10 @@
 FROM python:3.8-alpine as develop
 
+ARG CONSUMER_KEY
+ARG CONSUMER_SECRET
+ARG ACCESS_TOKEN
+ARG ACCESS_TOKEN_SECRET
+
 WORKDIR /app
 
 RUN apk add bash gcc musl-dev
