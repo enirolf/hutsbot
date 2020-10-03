@@ -17,7 +17,7 @@ before_install:
 - docker build --build-arg CONSUMER_KEY=$CONSUMER_KEY
                --build-arg CONSUMER_SECRET=$CONSUMER_SECRET
                --build-arg ACCESS_TOKEN=$ACCESS_TOKEN
-               --build-argACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET
+               --build-arg ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET
                -t $DOCKER_IMAGE .
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 - docker push $DOCKER_IMAGE
