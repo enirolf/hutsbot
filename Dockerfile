@@ -4,6 +4,11 @@ WORKDIR /app
 
 RUN apk add bash gcc musl-dev
 
+ENV CONSUMER_KEY=$CONSUMER_KEY
+ENV CONSUMER_SECRET=$CONSUMER_SECRET
+ENV ACCESS_TOKEN=$ACCESS_TOKEN
+ENV ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET
+
 RUN pip install --upgrade pip
 COPY requirements.txt /app
 RUN pip install -r requirements.txt
