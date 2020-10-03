@@ -1,4 +1,3 @@
-import pytest
 from bot.config import create_api
 
 

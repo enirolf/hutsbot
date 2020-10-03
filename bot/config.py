@@ -2,6 +2,7 @@ import os
 import logging
 import tweepy
 from dotenv import load_dotenv
+
 load_dotenv()
 
 FORMAT = "%(asctime)s %(message)s"
@@ -13,7 +14,11 @@ else:
 
 logger = logging.getLogger()
 
+
 def create_api() -> tweepy.models.User:
+    """
+    Create a new twitter API instance for sending and receiving tweets
+    """
     consumer_key = os.getenv("CONSUMER_KEY")
     consumer_secret = os.getenv("CONSUMER_SECRET")
     access_token = os.getenv("ACCESS_TOKEN")
@@ -21,8 +26,9 @@ def create_api() -> tweepy.models.User:
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
-    api = tweepy.API(auth, wait_on_rate_limit=True,
-                     wait_on_rate_limit_notify=True)
+    api = tweepy.API(
+        auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True
+    )
 
     try:
         user = api.verify_credentials()

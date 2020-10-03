@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python hutsbot.py
+python bot/hutsbot.py

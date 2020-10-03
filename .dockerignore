@@ -6,11 +6,16 @@ __pycache__/
 # Testing
 .tox/
 
-# Environment
-.env
-deploy_key
-
 # mypy
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Irrelevant to build
+.env*
+.gitignore
+.travis.yml
+LICENSE
+README.md
+Dockerfile
+docker-compose.yml
