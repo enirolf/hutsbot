@@ -1,11 +1,16 @@
 version: '3.8'
 
-services:
-  app:
+servicesde  app:
     build:
       context: .
       dockerfile: Dockerfile
     command: bash /app/run_bot.sh
+    environment:
+      - ENV
+      - CONSUMER_KEY
+      - CONSUMER_SECRET
+      - ACCESS_TOKEN
+      - ACCESS_TOKEN_SECRET
     volumes:
       - .:/bot
       - /etc/timezone:/etc/timezone:ro
