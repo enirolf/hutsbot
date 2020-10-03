@@ -2,10 +2,7 @@ os: linux
 
 dist: bionic
 
-language: python
-
-python:
-  - "3.8"
+language: minimal
 
 env:
   DOCKER_IMAGE: enirolf/hutsbot:latest
