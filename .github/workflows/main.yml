@@ -15,6 +15,11 @@ jobs:
         uses: actions/checkout@v2
       - name: run super-linter
         uses: github/super-linter@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_DOCKERFILE: false
+          VALIDATE_DOCKERFILE_HADOLINT: false
+          VALIDATE_MARKDOWN: false
   
   # build and push the docker image
   build:
@@ -28,6 +33,8 @@ jobs:
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
     steps:
+      - name: checkout code
+        uses: actions/checkout@v2
       - name: build docker image
         run: | 
           docker build \
@@ -50,6 +57,8 @@ jobs:
       DOCKER_IMAGE: ${{ secrets.DOCKER_IMAGE }}
     container: $DOCKER_IMAGE
     steps:
+      - name: checkout code
+        uses: actions/checkout@v2
       - name: install pytest
         run: pip intstall pytest
       - name: run pytest
@@ -64,6 +73,8 @@ jobs:
       DOCKER_IMAGE: ${{ secrets.DOCKER_IMAGE }}
 
     steps:
+      - name: checkout code
+        uses: actions/checkout@v2
       - name: deploy to remote server
         uses: appleboy/ssh-action@master
         with:
