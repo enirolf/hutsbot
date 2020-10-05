@@ -13,8 +13,6 @@ services:
 - docker
 
 before_install:
-- openssl aes-256-cbc -K $encrypted_189e52c2c347_key -iv $encrypted_189e52c2c347_iv
-  -in deploy_key.enc -out deploy_key -d
 - docker build --build-arg CONSUMER_KEY=$CONSUMER_KEY --build-arg CONSUMER_SECRET=$CONSUMER_SECRET
   --build-arg ACCESS_TOKEN=$ACCESS_TOKEN --build-arg ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET
   -t $DOCKER_IMAGE .
