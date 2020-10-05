@@ -1,6 +1,7 @@
 version: '3.8'
 
-servicesde  app:
+services:
+  app:
     build:
       context: .
       dockerfile: Dockerfile

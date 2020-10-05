@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # uses github's super-linter
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: run super-linter
+        uses: github/super-linter@v3
+  
+  # build and push the docker image
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_ID: ${{ secrets.DOCKER_ID }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_IMAGE: ${{ secrets.DOCKER_IMAGE }}
+      CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+      CONSUMER_SECRET: ${{ secrets.CONSUMER_TOKEN }}
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+    steps:
+      - name: build docker image
+        run: | 
+          docker build \
+          --build-arg CONSUMER_KEY=$CONSUMER_KEY \
+          --build-arg CONSUMER_SECRET=$CONSUMER_SECRET \
+          --build-arg ACCESS_TOKEN=$ACCESS_TOKEN \
+          --build-arg ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET \
+          -t $DOCKER_IMAGE .
+      - name: docker hub login
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+      - name: push image to docker hub
+        run: |
+          docker push $DOCKER_IMAGE
+  
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_IMAGE: ${{ secrets.DOCKER_IMAGE }}
+    container: $DOCKER_IMAGE
+    steps:
+      - name: install pytest
+        run: pip intstall pytest
+      - name: run pytest
+        run: pytest
+
+  deploy:
+    needs: [test]
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_ID: ${{ secrets.DOCKER_ID }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_IMAGE: ${{ secrets.DOCKER_IMAGE }}
+
+    steps:
+      - name: deploy to remote server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            mkdir -p hutsbot && cd hutsbot
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+            docker pull $DOCKER_IMAGE:latest
+            docker run -d $DOCKER_IMAGE:latest ./run_bot.sh
