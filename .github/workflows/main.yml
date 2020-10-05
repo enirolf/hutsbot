@@ -19,7 +19,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_DOCKERFILE: false
           VALIDATE_DOCKERFILE_HADOLINT: false
-          VALIDATE_MARKDOWN: false
+          VALIDATE_MD: false
   
   # build and push the docker image
   build:
@@ -45,7 +45,7 @@ jobs:
           -t $DOCKER_IMAGE .
       - name: docker hub login
         run: |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+          echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_ID --password-stdin
       - name: push image to docker hub
         run: |
           docker push $DOCKER_IMAGE
@@ -82,6 +82,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             mkdir -p hutsbot && cd hutsbot
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+            echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_ID --password-stdin
             docker pull $DOCKER_IMAGE:latest
             docker run -d $DOCKER_IMAGE:latest ./run_bot.sh
