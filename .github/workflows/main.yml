@@ -53,7 +53,9 @@ jobs:
   test:
     needs: [build]
     runs-on: ubuntu-latest
-    container: ${{ secrets.DOCKER_IMAGE }}
+    env:
+      DOCKER_IMAGE: 
+    container: enirolf/hutsbot
     steps:
       - name: checkout code
         uses: actions/checkout@v2
