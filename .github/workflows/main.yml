@@ -64,7 +64,7 @@ jobs:
 
   # deploy to server
   deploy:
-    needs: [lint, build, test]
+    needs: [test, build]
     runs-on: ubuntu-latest
 
     steps:
