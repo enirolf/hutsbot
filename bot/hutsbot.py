@@ -1,14 +1,11 @@
 import tweepy
-import random, time
+import random
+import time
 
 from config import create_api, logger
 
 
-RANDOM_TWEETS = ['Iewl',
-                 'Huuuuu',
-                 'Brrrrr'
-                 'Vies hè'
-                ]
+RANDOM_TWEETS = ["Iewl", "Huuuuu", "Brrrrr" "Vies hè"]
 
 
 class HutsbotStreamListener(tweepy.StreamListener):

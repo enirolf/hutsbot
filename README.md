@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/enirolf/hutsbot.svg?branch=main)](https://travis-ci.org/enirolf/hutsbot)
-
 # Hutsbot
 Gedver, hutspot.
 

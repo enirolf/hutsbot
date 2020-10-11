@@ -19,7 +19,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_DOCKERFILE: false
           VALIDATE_DOCKERFILE_HADOLINT: false
-          VALIDATE_MD: false
+          VALIDATE_MARKDOWN: false
   
   # build and push the docker image
   build:
@@ -54,9 +54,7 @@ jobs:
   # Note: right now it is ran in a venv with tox, still need to find a 
   # way to run it in a container
   test:
-    needs: [build]
     runs-on: ubuntu-latest
-    container: enirolf/hutsbot
     steps:
       - name: checkout code
         uses: actions/checkout@v2
@@ -65,7 +63,7 @@ jobs:
 
   # deploy to server
   deploy:
-    needs: [build]
+    needs: [lint, build, test]
     runs-on: ubuntu-latest
 
     steps:
