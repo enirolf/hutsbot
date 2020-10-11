@@ -5,7 +5,7 @@ import time
 from config import create_api, logger
 
 
-RANDOM_TWEETS = ["Iewl", "Huuuuu", "Brrrrr" "Vies hè"]
+RANDOM_TWEETS = ["Iewl", "Huuuuu", "Brrrrr", "Vies hè", "Gedverderrie", "Hè bah"]
 
 
 class HutsbotStreamListener(tweepy.StreamListener):
@@ -49,6 +49,7 @@ def tweet_random(api: tweepy.api):
         # Pick a random interval to wait between 30 and 120 minutes
         sleep_interval = random.randrange(1800, 7200)
         time.sleep(sleep_interval)
+        logger.info(f"tweeted: {tweet}")
 
 
 def main():
