@@ -1,10 +1,10 @@
 # Hutsbot
-Gedver, hutspot.
+Gedver, hutspot 😖
 
 # Installation and setup
-Of course, there already exists a [hutsbot](https://twitter.com/hutsbot), but if you want to have you own instance or improve the exsting one, follow these steps:
+Of course, there already exists a [hutsbot](https://twitter.com/hutsbot), but if you want to have your own instance (why tho?) or improve the exsting one, follow these steps:
 
-1. `git clone` this repository
+1. Fork this repository
 2. Get you own twitter API credentials ([see also here](https://developer.twitter.com/en/docs/labs/filtered-stream/quick-start))
 3. Add these credentials to `.env`
 4. Add your improvements
