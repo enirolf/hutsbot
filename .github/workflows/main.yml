@@ -50,33 +50,35 @@ jobs:
         run: |
           docker push $DOCKER_IMAGE
 
-  # TODO: Find an elegant way to run this in a private container  
-  # test:
-  #   needs: [build]
-  #   runs-on: ubuntu-latest
-  #   container: enirolf/hutsbot
-  #   steps:
-  #     - name: checkout code
-  #       uses: actions/checkout@v2
-  #     - name: install pytest
-  #       run: pip intstall pytest
-  #     - name: run pytest
-  #       run: pytest
+  # test the bot
+  # Note: right now it is ran in a venv with tox, still need to find a 
+  # way to run it in a container
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container: enirolf/hutsbot
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: run pytest
+        run: tox -e test
 
+  # deploy to server
   deploy:
     needs: [build]
     runs-on: ubuntu-latest
-    env:
-      DOCKER_ID: ${{ secrets.DOCKER_ID }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      DOCKER_IMAGE: ${{ secrets.DOCKER_IMAGE }}
 
     steps:
       - name: checkout code
         uses: actions/checkout@v2
       - name: deploy to remote server
         uses: appleboy/ssh-action@master
+        env:
+          DOCKER_ID: ${{ secrets.DOCKER_ID }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_IMAGE: ${{ secrets.DOCKER_IMAGE }}
         with:
+          envs: DOCKER_IMAGE, DOCKER_PASSWORD, DOCKER_ID
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
@@ -84,4 +86,5 @@ jobs:
             mkdir -p hutsbot && cd hutsbot
             echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_ID --password-stdin
             docker pull $DOCKER_IMAGE:latest
-            docker run -d $DOCKER_IMAGE:latest ./run_bot.sh
+            docker stop hutsbot || true && docker rm hutsbot || true
+            docker run -d --name hutsbot --rm $DOCKER_IMAGE:latest ./run_bot.sh

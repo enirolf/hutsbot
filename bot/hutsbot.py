@@ -1,6 +1,14 @@
 import tweepy
+import random, time
 
 from config import create_api, logger
+
+
+RANDOM_TWEETS = ['Iewl',
+                 'Huuuuu',
+                 'Brrrrr'
+                 'Vies hè'
+                ]
 
 
 class HutsbotStreamListener(tweepy.StreamListener):
@@ -33,6 +41,19 @@ class HutsbotStreamListener(tweepy.StreamListener):
             logger.error(f"{status}: API error")
 
 
+def tweet_random(api: tweepy.api):
+    """
+    Tweet anti-hutspot exclamations at random intervals between 30 minutes
+    and 2 hours
+    """
+    while True:
+        tweet = random.choice(RANDOM_TWEETS)
+        api.update_status(tweet)
+        # Pick a random interval to wait between 30 and 120 minutes
+        sleep_interval = random.randrange(1800, 7200)
+        time.sleep(sleep_interval)
+
+
 def main():
     """
     Driver method
@@ -40,7 +61,11 @@ def main():
     api = create_api()
     tweet_listener = HutsbotStreamListener(api)
     stream = tweepy.Stream(api.auth, tweet_listener)
-    stream.filter(track=["hutspot"])
+
+    # Run stream in a separate thread so we can still tweet random
+    # anti-hutspot related stuff at an interval
+    stream.filter(track=["hutspot"], is_async=True)
+    tweet_random(api)
 
 
 if __name__ == "__main__":
