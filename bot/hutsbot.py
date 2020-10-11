@@ -48,8 +48,8 @@ def tweet_random(api: tweepy.api):
         api.update_status(tweet)
         # Pick a random interval to wait between 30 and 120 minutes
         sleep_interval = random.randrange(1800, 7200)
-        time.sleep(sleep_interval)
         logger.info(f"tweeted: {tweet}")
+        time.sleep(sleep_interval)
 
 
 def main():
