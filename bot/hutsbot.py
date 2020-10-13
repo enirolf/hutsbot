@@ -1,11 +1,10 @@
 import tweepy
 import random
-import time
 
 from config import create_api, logger
 
-
-RANDOM_TWEETS = ["Iewl", "Huuuuu", "Brrrrr", "Vies hè", "Gedverderrie", "Hè bah"]
+RESPONSES = ["Iewl", "Huuuuu", "Brrrrr", "Vies hè", "Gedverderrie", "Blèh"]
+RANDOM_INTERVAL = 5
 
 
 class HutsbotStreamListener(tweepy.StreamListener):
@@ -16,6 +15,7 @@ class HutsbotStreamListener(tweepy.StreamListener):
 
     def __init__(self, api):
         self.api = api
+        self.random_counter = 0
 
     def on_status(self, tweet: tweepy.models.Status):
         """
@@ -24,32 +24,26 @@ class HutsbotStreamListener(tweepy.StreamListener):
         if tweet.is_quote_status is False and tweet.user != self.api.me():
             logger.info(f"@{tweet.user.screen_name}: {tweet.text} ({tweet.id})")
             quote_url = (
-                f"https://twitter.com/{tweet.user.screen_name}" f"/status/{tweet.id}"
+                f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}"
             )
-            self.api.update_status("😖", attachment_url=quote_url)
+
+            # Tweet something else than an emoji after 5 times
+            if self.random_counter < RANDOM_INTERVAL:
+                self.api.update_status("😖", attachment_url=quote_url)
+                self.random_counter += 1
+            else:
+                tweet = random.choice(RESPONSES)
+                self.api.update_status(tweet, attachment_url=quote_url)
+                self.random_counter = 0
 
     def on_error(self, status: int):
         """
-        This only is called when something goes wrong (duh)
+        This only is called when something goes wrong
         """
         if status == 420:
             logger.error(f"{status}: Rate limit exceeded")
         else:
-            logger.error(f"{status}: API error")
-
-
-def tweet_random(api: tweepy.api):
-    """
-    Tweet anti-hutspot exclamations at random intervals between 30 minutes
-    and 2 hours
-    """
-    while True:
-        tweet = random.choice(RANDOM_TWEETS)
-        api.update_status(tweet)
-        # Pick a random interval to wait between 30 and 120 minutes
-        sleep_interval = random.randrange(1800, 7200)
-        logger.info(f"tweeted: {tweet}")
-        time.sleep(sleep_interval)
+            logger.error(f"{status}: Other API error")
 
 
 def main():
@@ -59,11 +53,7 @@ def main():
     api = create_api()
     tweet_listener = HutsbotStreamListener(api)
     stream = tweepy.Stream(api.auth, tweet_listener)
-
-    # Run stream in a separate thread so we can still tweet random
-    # anti-hutspot related stuff at an interval
-    stream.filter(track=["hutspot"], is_async=True)
-    tweet_random(api)
+    stream.filter(track=["hutspot"])
 
 
 if __name__ == "__main__":
