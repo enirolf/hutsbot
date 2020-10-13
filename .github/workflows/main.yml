@@ -86,4 +86,4 @@ jobs:
             echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_ID --password-stdin
             docker pull $DOCKER_IMAGE:latest
             docker stop hutsbot || true && docker rm hutsbot || true
-            docker run -d --name hutsbot --rm $DOCKER_IMAGE:latest ./run_bot.sh
+            docker run -d --name hutsbot --restart=always ./run_bot.sh
