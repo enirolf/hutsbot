@@ -21,7 +21,7 @@ class HutsbotStreamListener(tweepy.StreamListener):
         """
         Take action when a new tweet comes in
         """
-        if tweet.is_quote_status is False and tweet.user != self.api.me():
+        if not hasattr(tweet, "retweeted_status") and tweet.user != self.api.me():
             logger.info(f"@{tweet.user.screen_name}: {tweet.text} ({tweet.id})")
             quote_url = (
                 f"https://twitter.com/{tweet.user.screen_name}/status/{tweet.id}"
