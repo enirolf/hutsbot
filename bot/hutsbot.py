@@ -53,7 +53,7 @@ def main():
     api = create_api()
     tweet_listener = HutsbotStreamListener(api)
     stream = tweepy.Stream(api.auth, tweet_listener)
-    stream.filter(track=["hutspot"])
+    stream.filter(track=["hutspot", "hut spot", "huts pot"])
 
 
 if __name__ == "__main__":
